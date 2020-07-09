@@ -1,14 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import React,{useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Constants from "expo-constants";
 import { Feather as Icon } from '@expo/vector-icons';
 import axios from 'axios';
-import { StyleSheet, TouchableOpacity, Text, View, KeyboardAvoidingView, Platform, TextInput,Button} from 'react-native';
+import { RectButton } from 'react-native-gesture-handler';
+import { StyleSheet, TouchableOpacity, Text, View, KeyboardAvoidingView, Platform, TextInput, Button, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 export default function Finder() {
-    const [name,setName] = useState('');
-    const [song,setSong] = useState('');
-    const [lyrics,setLyrics] = useState('');
+    const [name, setName] = useState('');
+    const [song, setSong] = useState('');
+    const [lyrics, setLyrics] = useState('');
+    const [lyricsTitle, setLyricsTitle] = useState('');
     const navigation = useNavigation();
     function findLyrics(title, artist) {
         return axios.get(`https://api.lyrics.ovh/v1/${artist}/${title}`)
@@ -22,49 +24,67 @@ export default function Finder() {
     const handleSong = text =>{
         setSong(text.target.value);
     } */
-    async function handleSubmit(){
-        try{
-            const lyricsResponse = await findLyrics(song,name);
-            const data = await lyricsResponse.data.lyrics;
-            
-            if(data){
-                console.log(data);
-                setLyrics(data);
-            }else{
-                console.log("Erro porra");
+    async function handleSubmit() {
+        if ((song === '') && (name === '')) {
+            const text = 'Please, insert the song and artist!';
+            setLyricsTitle(text);
+        } else if (song === '') {
+            const text = 'Please, insert the name of the song!';
+            setLyricsTitle(text);
+        } else if (name === '') {
+            const text = 'Please, insert the name of the artist!';
+            setLyricsTitle(text);
+        } else {
+            try {
+                const lyricsResponse = await findLyrics(song, name);
+                const data = await lyricsResponse.data.lyrics;
+
+                if (data) {
+                    setLyrics(data);
+                    const title = `${song} by ${name}`;
+                    setLyricsTitle(title);
+                } else {
+                    console.log("Not found");
+                }
+            } catch (err) {
+                setLyricsTitle("Can't find anything.");
+                console.log(err);
             }
-        }catch(err){
-            console.log(err);
         }
     }
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-            <View style={styles.container}>
-                <TouchableOpacity onPress={navigateToHome}>
-                    <Icon name="arrow-left" size={20} color="black" />
-                </TouchableOpacity>
-                <Text style={styles.title}>Finder screen</Text>
-                <View style={styles.main}>
-                    <Text style={styles.formTitle}>Artist name</Text>
-                    <TextInput
-                        style={styles.formControl}
-                        onChangeText={e => setName(e)}
-                        placeholder="Megadeth"
-                    />
-                    <Text style={styles.formTitle}>Song name</Text>
-                    <TextInput
-                        style={styles.formControl}
-                        onChangeText={e => setSong(e)}
-                        placeholder="She-wolf"
-                    />
-                    <Button style={styles.submitButton} title="Find out" onPress={handleSubmit}/>
+            <ScrollView>
+                <View style={styles.container}>
+                    <TouchableOpacity onPress={navigateToHome}>
+                        <Icon name="arrow-left" size={20} color="black" />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>Finder screen</Text>
+                    <View style={styles.main}>
+                        <Text style={styles.formTitle}>Artist name</Text>
+                        <TextInput
+                            style={styles.formControl}
+                            onChangeText={e => setName(e)}
+                            placeholder="Megadeth"
+                        />
+                        <Text style={styles.formTitle}>Song name</Text>
+                        <TextInput
+                            style={styles.formControl}
+                            onChangeText={e => setSong(e)}
+                            placeholder="She-wolf"
+                        />
+                        <RectButton style={styles.submitButton} onPress={handleSubmit}>
+                            <Text style={styles.buttonText}>Find out</Text>
+                        </RectButton>
+                    </View>
+                    <View style={styles.lyrics}>
+                        <Text style={styles.lyricsDetail}>{lyricsTitle}</Text>
+                        <Text style={styles.lyricsContent}>
+                            {lyrics}
+                        </Text>
+                    </View>
                 </View>
-                <View style={styles.lyrics}>
-                    <Text>
-                        {lyrics}
-                    </Text>
-                </View>
-            </View>
+            </ScrollView>
         </KeyboardAvoidingView>
     );
 }
@@ -83,21 +103,51 @@ const styles = StyleSheet.create({
         marginTop: 50,
         justifyContent: 'center',
         textAlign: 'center',
-        fontSize: 24
+        fontSize: 24,
+        marginBottom: 20,
     },
     formControl: {
         padding: 5,
-        color:'black',
-        backgroundColor:'darkgray'
+        color: 'white',
+        backgroundColor: 'black'
     },
-    formTitle:{
-        fontWeight:'bold',
-        textAlign:'center'
+    formTitle: {
+        fontWeight: 'bold',
+        textAlign: 'center'
     },
-    submitButton:{
-        backgroundColor:'red',
+    submitButton: {
+        backgroundColor: 'gold',
+        height: 55,
+        flexDirection: 'row',
+        width: 100,
+        borderRadius: 10,
+        overflow: 'hidden',
+        alignItems: 'center',
+        marginTop: 8,
+        alignSelf: 'flex-end',
     },
-    lyrics:{
-        color:'black'
+    buttonText: {
+        fontWeight: 'bold',
+        flex: 1,
+        justifyContent: 'center',
+        textAlign: 'center',
+        color: 'black',
+        fontSize: 16,
+    },
+    lyrics: {
+        paddingTop: 50,
+        color: 'black',
+        justifyContent: 'center',
+        textAlign: 'center',
+    },
+    lyricsDetail: {
+        paddingBottom: 15,
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    lyricsContent: {
+        textAlign: 'center',
+        paddingBottom: 10,
     }
 })
