@@ -1,23 +1,41 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import Constants from "expo-constants";
 import { Feather as Icon } from '@expo/vector-icons';
 import axios from 'axios';
 import { StyleSheet, TouchableOpacity, Text, View, KeyboardAvoidingView, Platform, TextInput,Button} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 export default function Finder() {
-    const navigation = useNavigation()
+    const [name,setName] = useState('');
+    const [song,setSong] = useState('');
+    const [lyrics,setLyrics] = useState('');
+    const navigation = useNavigation();
     function findLyrics(title, artist) {
         return axios.get(`https://api.lyrics.ovh/v1/${artist}/${title}`)
     }
     function navigateToHome() {
         navigation.navigate('Home');
     }
-    function handleInputChange() {
-        console.log("Hello");
+    /* const handleArtist = text =>{
+        setArtist(text.target.value);
     }
-    function handleSubmit(){
-        console.log("Button");
+    const handleSong = text =>{
+        setSong(text.target.value);
+    } */
+    async function handleSubmit(){
+        try{
+            const lyricsResponse = await findLyrics(song,name);
+            const data = await lyricsResponse.data.lyrics;
+            
+            if(data){
+                console.log(data);
+                setLyrics(data);
+            }else{
+                console.log("Erro porra");
+            }
+        }catch(err){
+            console.log(err);
+        }
     }
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -27,19 +45,24 @@ export default function Finder() {
                 </TouchableOpacity>
                 <Text style={styles.title}>Finder screen</Text>
                 <View style={styles.main}>
-                    <Text>Artist name</Text>
+                    <Text style={styles.formTitle}>Artist name</Text>
                     <TextInput
                         style={styles.formControl}
-                        onChange={handleInputChange}
+                        onChangeText={e => setName(e)}
                         placeholder="Megadeth"
                     />
-                    <Text>Song name</Text>
+                    <Text style={styles.formTitle}>Song name</Text>
                     <TextInput
                         style={styles.formControl}
-                        onChange={handleInputChange}
+                        onChangeText={e => setSong(e)}
                         placeholder="She-wolf"
                     />
                     <Button style={styles.submitButton} title="Find out" onPress={handleSubmit}/>
+                </View>
+                <View style={styles.lyrics}>
+                    <Text>
+                        {lyrics}
+                    </Text>
                 </View>
             </View>
         </KeyboardAvoidingView>
@@ -63,10 +86,18 @@ const styles = StyleSheet.create({
         fontSize: 24
     },
     formControl: {
-        padding: 2,
-        color:'darkgray',
+        padding: 5,
+        color:'black',
+        backgroundColor:'darkgray'
+    },
+    formTitle:{
+        fontWeight:'bold',
+        textAlign:'center'
     },
     submitButton:{
         backgroundColor:'red',
+    },
+    lyrics:{
+        color:'black'
     }
 })
