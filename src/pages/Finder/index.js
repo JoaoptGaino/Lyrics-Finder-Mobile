@@ -6,7 +6,9 @@ import axios from 'axios';
 import { RectButton } from 'react-native-gesture-handler';
 import { StyleSheet, TouchableOpacity, Text, View, KeyboardAvoidingView, Platform, TextInput, Button, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { AdMobBanner, AdMobInterstitial } from 'expo-ads-admob';
 export default function Finder() {
+    //ca-app-pub-5442802499873971/6532374989
     const [name, setName] = useState('');
     const [song, setSong] = useState('');
     const [lyrics, setLyrics] = useState('');
@@ -18,6 +20,9 @@ export default function Finder() {
     function navigateToHome() {
         navigation.navigate('Home');
     }
+    function bannerError(e) {
+        console.log(e);
+    }
     /* const handleArtist = text =>{
         setArtist(text.target.value);
     }
@@ -25,17 +30,19 @@ export default function Finder() {
         setSong(text.target.value);
     } */
     async function handleSubmit() {
+
         if ((song === '') && (name === '')) {
-            const text = 'Please, insert the song and artist!';
+            const text = 'Please, write the song and artist!';
             setLyricsTitle(text);
         } else if (song === '') {
-            const text = 'Please, insert the name of the song!';
+            const text = 'Please, write the name of the song!';
             setLyricsTitle(text);
         } else if (name === '') {
-            const text = 'Please, insert the name of the artist!';
+            const text = 'Please, write the name of the artist!';
             setLyricsTitle(text);
         } else {
             try {
+
                 const lyricsResponse = await findLyrics(song, name);
                 const data = await lyricsResponse.data.lyrics;
 
@@ -43,15 +50,19 @@ export default function Finder() {
                     setLyrics(data);
                     const title = `${song} by ${name}`;
                     setLyricsTitle(title);
+                    
                 } else {
                     console.log("Not found");
+                    setLyrics('Not found');
+                    
                 }
             } catch (err) {
-                setLyricsTitle("Can't find anything.");
+                //setLyricsTitle("Can't find anything.");
                 console.log(err);
             }
         }
     }
+
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
             <ScrollView>
@@ -84,8 +95,16 @@ export default function Finder() {
                         </Text>
                     </View>
                 </View>
+
             </ScrollView>
+            <AdMobBanner
+                bannerSize="banner"
+                adUnitID="ca-app-pub-7648437310619207/8440207232"
+                setTestDeviceIDAsync="EMULATOR"
+                onDidFailToReceiveAdWithError={(err) => bannerError(err)}
+            />
         </KeyboardAvoidingView>
+
     );
 }
 

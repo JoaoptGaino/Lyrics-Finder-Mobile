@@ -3,13 +3,19 @@ import React from 'react';
 import { RectButton } from 'react-native-gesture-handler';
 import { StyleSheet, Text, View, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { AdMobBanner, setTestDeviceIDAsync } from 'expo-ads-admob';
+
 
 export default function Home() {
+    function bannerError(e) {
+        console.log(e);
+    }
     const navigation = useNavigation();
     function handleNavigateToFinder() {
         navigation.navigate('Finder');
     }
     return (
+
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
 
             <View style={styles.container}>
@@ -24,7 +30,14 @@ export default function Home() {
                     </Text>
                     </RectButton>
                 </View>
+                <AdMobBanner
+                    bannerSize="banner"
+                    adUnitID="ca-app-pub-2287155063894137/1556547764"
+                    setTestDeviceIDAsync="EMULATOR"
+                    onDidFailToReceiveAdWithError={(err) => bannerError(err)}
+                />
             </View>
+
         </KeyboardAvoidingView>
     );
 }
@@ -40,8 +53,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     title: {
-        marginTop:25,
-        padding:10,
+        marginTop: 25,
+        padding: 10,
         color: 'black',
         fontSize: 32,
         maxWidth: 360,
@@ -54,7 +67,7 @@ const styles = StyleSheet.create({
         marginTop: 16,
         maxWidth: 400,
         lineHeight: 24,
-        textAlign:'center',
+        textAlign: 'center',
     },
     button: {
         backgroundColor: 'gold',
@@ -66,7 +79,7 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
     buttonText: {
-        fontWeight:'bold',
+        fontWeight: 'bold',
         flex: 1,
         justifyContent: 'center',
         textAlign: 'center',

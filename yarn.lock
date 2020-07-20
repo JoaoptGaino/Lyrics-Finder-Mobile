@@ -2504,6 +2504,13 @@ expand-brackets@^2.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
+expo-ads-admob@~8.2.1:
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/expo-ads-admob/-/expo-ads-admob-8.2.1.tgz#55afdbb9986dc2d9d97a67c65e21d880b40bf468"
+  integrity sha512-el5DlWpetcyWT52fnYxxlFHkTAjcBgymxKbbHmvLCinz0jCZXEip2OtdktZxVlmTwFgI2Vn13Szdw55OpluW8w==
+  dependencies:
+    prop-types "^15.6.2"
+
 expo-asset@~8.1.7:
   version "8.1.7"
   resolved "https://registry.yarnpkg.com/expo-asset/-/expo-asset-8.1.7.tgz#32618e51f85df56f1d7dd54c71eb486ae7f7674e"
@@ -4709,6 +4716,11 @@ react-native-iphone-x-helper@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
   integrity sha512-/VbpIEp8tSNNHIvstuA3Swx610whci1Zpc9mqNkqn14DkMbw+ORviln2u0XyHG1kPvvwTNGZY6QpeFwxYaSdbQ==
+
+react-native-mopub-sdk@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-mopub-sdk/-/react-native-mopub-sdk-1.0.0.tgz#35afe03b3c11a4e087a985ef7bc6fa2b0eb256e2"
+  integrity sha512-ujJ9N6SBUbHYEl39RqwUseF2wVr9rwfpvuDCFTIceQTDr/UDkqN1K/XcVOj3WnoFqwISzAyg5vZ0w7zezGJR1Q==
 
 react-native-ratings@^7.2.0:
   version "7.2.0"
