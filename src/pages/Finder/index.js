@@ -30,7 +30,10 @@ export default function Finder() {
         setSong(text.target.value);
     } */
     async function handleSubmit() {
-
+        const load = 'Searching...';
+        setLyrics('');
+        setLyricsTitle('');
+        setLyrics(load);
         if ((song === '') && (name === '')) {
             const text = 'Please, write the song and artist!';
             setLyricsTitle(text);
